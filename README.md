@@ -53,10 +53,6 @@ Para executar o NewsBOT localmente, siga os seguintes passos:
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests para melhorar o NewsBOT.
 
-## Licença
-
-Este projeto é licenciado sob a Licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais informações.
-
 ---
 
 Feito com ❤️ pela equipe NewsBOT (AlanthiasCO)
