@@ -1,5 +1,7 @@
 # NewsBOT
 
+[![My Skills](https://skillicons.dev/icons?i=discord, py, git)](https://skillicons.dev)
+
 NewsBOT é um projeto que começou com o curso de Python da plataforma Codedéx. Inicialmente, foi desenvolvido um BOT para o Discord que enviava uma imagem engraçada para o usuário quando solicitado. O projeto foi aprimorado e agora está se encaminhando para a criação de um BOT utilitário para o Discord.
 
 ## Funcionalidades

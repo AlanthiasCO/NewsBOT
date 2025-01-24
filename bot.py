@@ -33,7 +33,6 @@ def get_qr_code(link):
     qr_url = f'https://api.qrserver.com/v1/create-qr-code/?data={link}&size=200x200'
     return qr_url
 
-
 def get_weather(city):
     base_url = f'http://api.openweathermap.org/data/2.5/weather'
     contry = 'BR'
