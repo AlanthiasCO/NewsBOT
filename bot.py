@@ -6,11 +6,23 @@ import wikipedia
 from GoogleNews import GoogleNews
 import os
 from dotenv import load_dotenv
+import openai
+from huggingface_hub import InferenceClient
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 API_KEY = os.getenv('API_KEY')
+hf_token = os.getenv("HF_TOKEN")
+
+hf_client  = InferenceClient("meta-llama/Llama-3.2-1B-Instruct", token=hf_token)
+
+def generate_text(prompt, max_new_tokens=200):
+    try:
+        output = hf_client.text_generation(prompt, max_new_tokens=max_new_tokens)
+        return output
+    except Exception as e:
+        return f"Erro ao gerar texto: {e}"
 
 def cotacao():
     response = requests.get('https://economia.awesomeapi.com.br/all/USD-BRL,EUR-BRL,BTC-BRL')
@@ -34,22 +46,25 @@ def get_qr_code(link):
     return qr_url
 
 def get_weather(city):
-    base_url = f'http://api.openweathermap.org/data/2.5/weather'
-    contry = 'BR'
-    result = requests.get(base_url, params={"q": "{},{}".format(city, contry),
-                                   "appid": API_KEY,
-                                   "units": "metric",
-                                   "lang": "pt_br"})
-    data = result.json()
-    if data['cod'] == '404':
-        return 'Cidade não encontrada.', None
-    else:
-        weather = data['weather'][0]['description']
-        temp = data['main']['temp']
-        feels_like = data['main']['feels_like']
-        return f'Em {city} está {weather}. A temperatura é de {temp}°C, mas parece que está {feels_like}°C.', (weather, temp, feels_like)
-         
-         
+    try:
+        base_url = 'http://api.openweathermap.org/data/2.5/weather'
+        contry = 'BR'
+        result = requests.get(base_url, params={"q": "{},{}".format(city, contry),
+                                                "appid": API_KEY,
+                                                "units": "metric",
+                                                "lang": "pt_br"})
+        result.raise_for_status()
+        data = result.json()
+        if data['cod'] == '404':
+            return 'Cidade não encontrada.', None
+        else:
+            weather = data['weather'][0]['description']
+            temp = data['main']['temp']
+            feels_like = data['main']['feels_like']
+            return f'Em {city} está {weather}. A temperatura é de {temp}°C, mas parece que está {feels_like}°C.', (weather, temp, feels_like)
+    except requests.exceptions.RequestException as e:
+        return f"Erro ao obter clima: {e}", None
+
 def create_weather_image(city, weather, temp, feels_like):
     img = Image.new('RGB', (250, 150), color=(73, 109, 137))
     d = ImageDraw.Draw(img)
@@ -62,7 +77,7 @@ def create_weather_image(city, weather, temp, feels_like):
     
     img_path = f'{city}_weather.png'
     img.save(img_path)
-    return img_path         
+    return img_path
 
 class MyClient(discord.Client):
     async def on_ready(self):
@@ -152,6 +167,17 @@ class MyClient(discord.Client):
                 await message.channel.send(file=discord.File(img_path))
             else:
                 await message.channel.send(weather_text)
+    
+    # Comando $agente <pergunta>
+        elif message.content.startswith('$agente'):
+            # Extrair a pergunta do comando
+            prompt = message.content[len('$agente '):].strip()
+            if prompt:
+                # Gerar a resposta usando a API da Hugging Face
+                response = generate_text(prompt)
+                await message.channel.send(response)
+            else:
+                await message.channel.send("Por favor, faça uma pergunta após o comando $agente.")
 
 
 intents = discord.Intents.default()

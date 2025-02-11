@@ -4,10 +4,7 @@
   </a>
 </p>
 
-
-# NewsBOT
-
-NewsBOT é um projeto que começou com o curso de Python da plataforma [Codedéx](https://www.codedex.io/home). Inicialmente, foi desenvolvido um BOT para o Discord que enviava uma imagem engraçada para o usuário quando solicitado. O projeto foi aprimorado e agora está se encaminhando para a criação de um BOT utilitário para o Discord.
+usuário quando solicitado. O projeto foi aprimorado e agora está se encaminhando para a criação de um BOT utilitário para o Discord.
 
 ## Funcionalidades
 
